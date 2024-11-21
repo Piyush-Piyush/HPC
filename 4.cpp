@@ -1,51 +1,65 @@
-//  4. Using OpenMP, Design and develop a multi-threaded program to generate and
-//  printFibonacci Series. One thread must generate the numbers up to the specified limit
-//  and another thread must print them. Ensure proper synchronization.
-//  PROGRAM:
 #include <iostream>
-#include <omp.h>
 #include <vector>
+#include <omp.h>
 using namespace std;
-vector<int> fib;
-bool ready = false;
-void generate_fib(int limit)
-{
-    fib.push_back(0), fib.push_back(1);
-    for (int i = 2; i < limit; i++)
-        fib.push_back(fib[i - 1] + fib[i - 2]);
-    ready = true;
-}
-void print_fib()
-{
-    while (!ready)
-        ;
-    cout << "Fibonacci: ";
-    for (int i : fib)
-        cout << i << " ";
-    cout << endl;
-}
+
 int main()
 {
     int limit;
-    cout << "Limit: ";
+    cout << "Enter the number of terms in the Fibonacci series: ";
     cin >> limit;
-    double start_serial = omp_get_wtime();
-    fib.clear();
-    generate_fib(limit);
-    print_fib();
-    double end_serial = omp_get_wtime();
-    cout << "Serial Time: " << end_serial - start_serial << " seconds\n";
-    double start_parallel = omp_get_wtime();
-#pragma omp parallel
+
+    if (limit < 1)
     {
-#pragma omp single
+        cout << "Please enter a positive number!" << endl;
+        return 0;
+    }
+
+    vector<int> fib_series(limit);
+    int count = 0;
+
+#pragma omp parallel sections shared(fib_series, count, limit)
+    {
+// Section for generating Fibonacci series
+#pragma omp section
         {
-            fib.clear();
-            generate_fib(limit);
-            print_fib();
+            int a = 0, b = 1, c;
+            if (limit >= 1)
+            {
+#pragma omp critical
+                fib_series[count++] = a;
+            }
+            if (limit >= 2)
+            {
+#pragma omp critical
+                fib_series[count++] = b;
+            }
+            for (int i = 2; i < limit; ++i)
+            {
+                c = a + b;
+#pragma omp critical
+                fib_series[count++] = c;
+                a = b;
+                b = c;
+            }
+        }
+
+// Section for printing Fibonacci series
+#pragma omp section
+        {
+            int printed = 0;
+            while (printed < limit)
+            {
+#pragma omp critical
+                if (printed < count)
+                {
+                    cout << fib_series[printed] << " ";
+                    ++printed;
+                }
+            }
+            cout << endl;
         }
     }
-    double end_parallel = omp_get_wtime();
-    cout << "Parallel Time: " << end_parallel - start_parallel << " seconds\n";
+
     return 0;
 }
