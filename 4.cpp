@@ -5,36 +5,36 @@ using namespace std;
 
 int main()
 {
-    int limit;
+    int n;
     cout << "Enter the number of terms in the Fibonacci series: ";
-    cin >> limit;
+    cin >> n;
 
-    if (limit < 1)
+    if (n < 1)
     {
         cout << "Please enter a positive number!" << endl;
         return 0;
     }
 
-    vector<int> fib_series(limit);
+    vector<int> fib_series(n);
     int count = 0;
 
-#pragma omp parallel sections shared(fib_series, count, limit)
+#pragma omp parallel sections shared(fib_series, count, n)
     {
 // Section for generating Fibonacci series
 #pragma omp section
         {
             int a = 0, b = 1, c;
-            if (limit >= 1)
+            if (n >= 1)
             {
 #pragma omp critical
                 fib_series[count++] = a;
             }
-            if (limit >= 2)
+            if (n >= 2)
             {
 #pragma omp critical
                 fib_series[count++] = b;
             }
-            for (int i = 2; i < limit; ++i)
+            for (int i = 2; i < n; ++i)
             {
                 c = a + b;
 #pragma omp critical
@@ -48,7 +48,7 @@ int main()
 #pragma omp section
         {
             int printed = 0;
-            while (printed < limit)
+            while (printed < n)
             {
 #pragma omp critical
                 if (printed < count)
