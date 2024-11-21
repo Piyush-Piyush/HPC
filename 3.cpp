@@ -1,5 +1,4 @@
-// 3. X on the earth, to find his accurate position on the globe we require the value of PI.Write a program to compute the value of pi function by Numerical integration using OpenMP PARALLEL section.
-// PROGRAM :
+/* X on the earth, to find his accurate position on the globe we require the value of PI.Write a program to compute the value of pi function by Numerical integration using OpenMP PARALLEL section. */
 
 
 #include <iostream>

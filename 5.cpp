@@ -21,8 +21,8 @@ int main()
         cin >> cgpa;
     }
 
-    double max_cgpa_serial = -numeric_limits<double>::infinity();
-    double max_cgpa_parallel = -numeric_limits<double>::infinity();
+    double max_cgpa_serial = INT_MIN;
+    double max_cgpa_parallel = INT_MIN;
 
     // Serial execution
     double start_serial = omp_get_wtime();
