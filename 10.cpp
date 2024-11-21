@@ -1,8 +1,9 @@
 // 10. Multiply two square matrices(1000, 2000 or 3000 dimensions).Compare the performance of a sequential and parallel algorithm using open MP.PROGRAM :
 #include <iostream>
 #include <vector>
-#include <omp.h> // OpenMP
+#include <omp.h>
 using namespace std;
+
 // Function to multiply two matrices sequentially
 void multiplySequential(const vector<vector<int>> &A, const vector<vector<int>> &B,
                         vector<vector<int>> &C, int N)
@@ -19,6 +20,7 @@ void multiplySequential(const vector<vector<int>> &A, const vector<vector<int>> 
         }
     }
 }
+
 // Function to multiply two matrices using OpenMP
 void multiplyParallel(const vector<vector<int>> &A, const vector<vector<int>> &B,
                       vector<vector<int>> &C, int N)
@@ -36,26 +38,35 @@ void multiplyParallel(const vector<vector<int>> &A, const vector<vector<int>> &B
         }
     }
 }
+
 int main()
 {
-    int N; // Matrix size (1000, 2000, 3000)
+    int N; // Matrix size (e.g., 1000, 2000, 3000)
     cout << "Enter matrix size (e.g., 1000, 2000, 3000): ";
     cin >> N;
+
     // Initialize matrices A, B, and C
     vector<vector<int>> A(N, vector<int>(N, 1)); // Matrix A with all elements = 1
     vector<vector<int>> B(N, vector<int>(N, 1)); // Matrix B with all elements = 1
     vector<vector<int>> C(N, vector<int>(N, 0)); // Matrix C to store result
+
     // Sequential multiplication
     double start = omp_get_wtime();
     multiplySequential(A, B, C, N);
     double end = omp_get_wtime();
     double durationSeq = end - start;
     cout << "Time taken for sequential multiplication: " << durationSeq << " seconds" << endl;
+
     // Parallel multiplication using OpenMP
     start = omp_get_wtime();
     multiplyParallel(A, B, C, N);
     end = omp_get_wtime();
     double durationPar = end - start;
-    cout << "Time taken for parallel multiplication (OpenMP): " << durationPar << "seconds " << endl;
+    cout << "Time taken for parallel multiplication (OpenMP): " << durationPar << " seconds" << endl;
+
+    // Performance improvement
+    double speedup = durationSeq / durationPar;
+    cout << "Speedup achieved with OpenMP: " << speedup << "x" << endl;
+
     return 0;
 }

@@ -1,3 +1,9 @@
+//  2. Consider a Scenario where a person visits a supermarket for shopping. He
+//  purchases various items in different sections such as clothing, gaming, grocery,
+//  stationary. Write an openMP program to process his bill parallelly in each section and
+//  display the final amount to be paid. (sum of elements parallelly)
+//  PROGRAM:              
+
 #include <iostream>
 #include <vector>
 #include <omp.h>
